@@ -1,0 +1,187 @@
+﻿
+@model SearchResponse
+@{
+    ViewData["Title"] = "Home Page";
+    Layout = null;
+    var selecttion = ViewData["selection"] as List<SelectListItem>;
+    string imagePath = "";
+}
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+
+    <title></title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    @*<link rel="stylesheet" href="/resources/demos/style.css">*@
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+
+
+
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        /* GOOGLE AREA */
+        .google #google_logo {
+            text-align: center;
+            display: block;
+            margin: 0 auto;
+            clear: both;
+            padding-top: 112px;
+            padding-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div>
+
+        <a href="#" id="google_logo"><img src="~/Img/unnamed.jpg" alt="smartApartmentPics" /></a>
+        <h4 style="text-align: center; font-weight:200">SMART APARTMENT DATA</h4>
+
+        <h6 style="text-align: center">search engine built using AWS OpenSearch</h6>
+        <br />
+        <br />
+    </div>
+    <div class="row input-group">
+        <div class="col-2"></div>
+        <div class="form-outline col-5">
+            <input type="search" id="source" class="form-control" />
+            <div id="result"></div>
+
+        </div>
+        <div class="col-4">
+            <select id="scope" asp-items="selecttion" class="btn btn-primary"></select>
+            <button type="button" onclick="submit()" class="btn btn-primary">
+                Search <i class="fas fa-search"></i>
+            </button>
+        </div>
+
+        <div class="col-1">
+
+        </div>
+   
+
+    <div style="margin-top:100px" class="container">
+        <table>
+            @if (Model!=null &&Model.result != null&& Model.result.Count>0)
+            {
+
+
+                @foreach (var searchResult in Model.result)
+                {
+
+                    @if (searchResult.type.Contains("property"))
+                    {
+                        imagePath = "~/Img/house.png";
+                    }
+                    else
+                    {
+                        imagePath = "~/Img/business-card.png";
+                    }
+                    <tr>
+                        <td>
+                            <img src=@imagePath alt="logo" />
+                        </td>
+                        <td>
+                            
+                        </td>
+                        <td>
+                            <h4>@searchResult.name</h4>
+                            <h6>@searchResult.address</h6>
+                        </td>
+                    </tr>
+                }
+
+
+
+            }
+        </table>
+    </div>
+        </div>
+
+    <script>
+        const $source = document.querySelector('#source');
+        const $result = document.querySelector('#result');
+
+        const searchAsYouType = function (e) {
+            $result.innerHTML = e.target.value;
+            //console.log(e.target.value);
+
+            $.ajax({
+                url: "/Search",
+                type: 'POST',
+                cache: false,
+                data: { 'query': e.target.value },
+                success: function (html) {
+
+                    //var data = html.aggregations.auto_complete.buckets
+                    var data = html.result
+                    // console.log(data)
+
+                    var _ = []
+
+                    $.each(data, (index, value) => {
+
+                        _.push(value['name'] + ' > ' + value['type'])
+
+                    });
+                    console.log(_)
+                    autoc(_);
+                }
+            });
+        }
+
+        $source.addEventListener('input', searchAsYouType)
+        //$source.addEventListener('input', aa)
+        $source.addEventListener('propertychange', searchAsYouType)
+
+        function autoc(_) {
+            $("#source").autocomplete({
+                source: _
+            });
+        }
+
+        function submit() {
+            //sessionStorage.setItem('title', $("#source").val())
+            var input = $("#source").val();
+            var scope = $("#scope").val();
+            if ($("#source").val().includes('>')) {
+                input = input.split('>')[0]
+                console.log(input);
+                location = '../../?query='+input+'&scope='+scope;
+            }
+            else {
+                location = '../../?query=' + input + '&scope=' + scope;
+            }
+
+        }
+
+
+        $(document).ready(function () {
+
+            var data = sessionStorage.getItem('title')
+            $("#source").val(data);
+        });
+
+
+
+    </script>
+
+</body>
+</html>
