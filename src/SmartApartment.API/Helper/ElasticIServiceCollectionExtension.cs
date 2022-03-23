@@ -1,7 +1,6 @@
 ﻿
 
 using Domain.Entities;
-using Implementation;
 using Implementation.Helper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,7 +22,9 @@ namespace SmartApartment.API.Helper
                 AWTAccessKeyId = config["Elastic:AWTAccessKeyId"],
                 AWTSecretKey = config["Elastic:AWTSecretKey"],
                 AWTToken = config["Elastic:AWTToken"],
-                UseLocal = config["Elastic:UseLocal"] == "true" ? true : false
+
+                UseLocal = config.GetValue<bool>("Elastic:UseLocal")
+                
             };
 
             ElasticClient client = SearchServiceHelper.GetClient(options);

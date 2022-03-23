@@ -9,7 +9,11 @@ namespace Implementation.Helper
     {
         public static BulkResponse BulkIndexErrorLogger(this BulkResponse IndexBulkResponses, ILogger logger)
         {
-            if (!IndexBulkResponses.Errors) return IndexBulkResponses;
+            if (!IndexBulkResponses.Errors)
+            {
+                logger.LogInformation($"Bulk index completed with no error(s)");
+                return IndexBulkResponses;
+            }
             
 
             foreach (BulkResponseItemBase  IndexBulkResponse in IndexBulkResponses.ItemsWithErrors)
@@ -36,11 +40,9 @@ namespace Implementation.Helper
 
             CreateIndexResponse createIndexResponse = client.Indices.Create(Name, c => c
                   .Settings(s => s
-                      .NumberOfShards(5)
-                      .NumberOfReplicas(0)
-                      .Analysis(a => a
-                           .Analyzers(aa => aa
-                               .Custom("myCustonalyzer", sa => sa
+                      .Analysis(indexDesc => indexDesc
+                           .Analyzers(analyzerDesc => analyzerDesc
+                               .Custom("myCustonalyzer", custAnalDesc => custAnalDesc
                                     .Tokenizer("edge_ngram")
                                     .Filters("lowercase")
 

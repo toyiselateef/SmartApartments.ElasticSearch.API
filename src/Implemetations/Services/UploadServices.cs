@@ -17,19 +17,19 @@ namespace Implementation.Services
     {
         private readonly ILogger<UploadServices> logger;
         private readonly IElasticClient elasticClient;
-        private readonly IOptions<ElasticSettings> configSettings;
+        private readonly ElasticSettings configSettings;
 
         public UploadServices(ILogger<UploadServices> logger, IElasticClient elasticClient, IOptions<ElasticSettings> configSettings)
         {
             this.logger = logger;
             this.elasticClient = elasticClient;
-            this.configSettings = configSettings;
+            this.configSettings = configSettings.Value;
         }
         public Task<bool> IndexDocumentAsync()
         {
 
-            string propertyFileRootPath = configSettings.Value.PropertyUpload;
-            string managementFileRootPath = configSettings.Value.ManagementUpload;
+            string propertyFileRootPath = configSettings.PropertyUpload;
+            string managementFileRootPath = configSettings.ManagementUpload;
          
             
             
@@ -45,10 +45,10 @@ namespace Implementation.Services
             }
 
             logger.LogInformation("about to create index for management:: ");
-            IndexCreate<ManagementClass>.CreateIndex(configSettings.Value.PropertyIndex, elasticClient, "market");
+            IndexCreate<ManagementClass>.CreateIndex(configSettings.PropertyIndex, elasticClient, "market");
 
             logger.LogInformation("bulk indexing management data:: ");
-            bool managementindexResponse = IndexCreate<ManagementClass>.CreateAndBulkIndex(elasticClient, configSettings.Value.PropertyIndex, managements,logger);
+            bool managementindexResponse = IndexCreate<ManagementClass>.CreateAndBulkIndex(elasticClient, configSettings.PropertyIndex, managements,logger);
             logger.LogInformation("created index for management:: ");
 
 
@@ -65,10 +65,10 @@ namespace Implementation.Services
             }
 
             logger.LogInformation("about to create index for management:: ");
-            IndexCreate<PropertyClass>.CreateIndex(configSettings.Value.PropertyIndex, elasticClient, "market");
+            IndexCreate<PropertyClass>.CreateIndex(configSettings.PropertyIndex, elasticClient, "market");
 
             logger.LogInformation("bulk indexing management data:: ");
-            bool propertyindexResponse = IndexCreate<PropertyClass>.CreateAndBulkIndex(elasticClient, configSettings.Value.PropertyIndex, properties, logger);
+            bool propertyindexResponse = IndexCreate<PropertyClass>.CreateAndBulkIndex(elasticClient, configSettings.PropertyIndex, properties, logger);
             logger.LogInformation("created index for property data:: ");
 
 

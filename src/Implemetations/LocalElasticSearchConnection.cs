@@ -1,4 +1,6 @@
-﻿using Domain.Entities;
+﻿
+using Domain.Entities;
+using Elasticsearch.Net;
 using Nest;
 using System;
 
@@ -6,14 +8,23 @@ namespace SmartApartment.Logic
 {
     public  class LocalElasticSearchConnection
     {
+        private readonly ElasticSettings configSettings;
+        public  ElasticClient Client { get; private set; }
+        //public static ElasticLowLevelClient LowlevelClient { get; private set; }
 
-        public static ElasticClient Connect(string defaultIndex, string url)
+        public LocalElasticSearchConnection(ElasticSettings configSettings)
         {
-            Uri uri = new Uri(url);
-            ConnectionSettings settings = new ConnectionSettings(uri);
-            settings.ThrowExceptions(true);
-            //settings.DefaultIndex(defaultIndex);
-            return new ElasticClient(settings);
+            this.configSettings = configSettings;
+            Initialize();
+        }
+
+        
+        private  void Initialize()
+        {
+            Uri uri = new Uri(configSettings.URILocal);
+            ConnectionSettings connectionSettings = new ConnectionSettings(uri);
+            connectionSettings.ThrowExceptions(true);
+            Client = new ElasticClient(connectionSettings);
         }
     }
 

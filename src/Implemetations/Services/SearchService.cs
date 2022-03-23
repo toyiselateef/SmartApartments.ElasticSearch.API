@@ -17,13 +17,13 @@ namespace Implementation.Services
     {
         private readonly ILogger<SearchService> logger;
         private readonly IElasticClient elasticClient;
-        private readonly IOptions<ElasticSettings> settings;
+        private readonly ElasticSettings configSettings;
 
-        public SearchService(ILogger<SearchService> logger, IElasticClient elasticClient, IOptions<ElasticSettings> settings)
+        public SearchService(ILogger<SearchService> logger, IElasticClient elasticClient, IOptions<ElasticSettings> configSettings)
         {
             this.logger = logger;
             this.elasticClient = elasticClient;
-            this.settings = settings;
+            this.configSettings = configSettings.Value;
         }
 
 
@@ -36,11 +36,11 @@ namespace Implementation.Services
             List<SearchResult> AllSearchResults = new List<SearchResult>();
 
             
-            IEnumerable<SearchResult> propertiesSearchResult = SearchServiceHelper.propertySearch(elasticClient, settings.Value.PropertyIndex, input);
+            IEnumerable<SearchResult> propertiesSearchResult = SearchServiceHelper.propertySearch(elasticClient, configSettings.PropertyIndex, input);
 
             AllSearchResults.AddRange(propertiesSearchResult);
 
-            AllSearchResults.AddRange(SearchServiceHelper.ManagementSearch(elasticClient, settings.Value.ManagementIndex, input));
+            AllSearchResults.AddRange(SearchServiceHelper.ManagementSearch(elasticClient, configSettings.ManagementIndex, input));
             logger.LogInformation($"combined results from both indexes for both property and management:: ");
 
             logger.LogInformation($"search was successful {nameof(SearchAsync)}:: ");
@@ -57,7 +57,7 @@ namespace Implementation.Services
             logger.LogInformation("about to get market list from elasticsearch:: ");
             List<string> marketListResult = new List<string>();
 
-            marketListResult.AddRange(SearchServiceHelper.MarketsSearch(elasticClient, new List<string> { settings.Value.PropertyIndex, settings.Value.ManagementIndex }));
+            marketListResult.AddRange(SearchServiceHelper.MarketsSearch(elasticClient, new List<string> { configSettings.PropertyIndex, configSettings.ManagementIndex }));
 
             logger.LogInformation("market list retrieved successfullyr:: ");
             return Task.FromResult(marketListResult);

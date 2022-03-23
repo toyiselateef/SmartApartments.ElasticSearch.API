@@ -54,7 +54,7 @@
         <a href="#" id="google_logo"><img src="~/Img/unnamed.jpg" alt="smartApartmentPics" /></a>
         <h4 style="text-align: center; font-weight:200">SMART APARTMENT DATA</h4>
 
-        <h6 style="text-align: center">search engine built using AWS OpenSearch</h6>
+        <h6 style="text-align: center">autocomplete search engine built using AWS OpenSearch</h6>
         <br />
         <br />
     </div>
@@ -66,7 +66,9 @@
 
         </div>
         <div class="col-4">
-            <select id="scope" asp-items="selecttion" class="btn btn-primary"></select>
+            <select id="scopes" asp-items="selecttion" class="btn btn-primary">
+                <option value="">select scope</option>
+            </select>
             <button type="button" onclick="submit()" class="btn btn-primary">
                 Search <i class="fas fa-search"></i>
             </button>
@@ -96,10 +98,10 @@
                     }
                     <tr>
                         <td>
-                            <img src=@imagePath alt="logo" />
+                            <img style="height :50px;width:50px" src="~/Img/house.png" alt="logo" />
                         </td>
                         <td>
-                            
+                            <div style="width:50px">   </div>
                         </td>
                         <td>
                             <h4>@searchResult.name</h4>
@@ -118,31 +120,36 @@
     <script>
         const $source = document.querySelector('#source');
         const $result = document.querySelector('#result');
+       
+        //const scopes= $('#scopes').val();
+      
+
+
 
         const searchAsYouType = function (e) {
+            const scopes = $('#scopes').val();
             $result.innerHTML = e.target.value;
-            //console.log(e.target.value);
-
+           
+       
             $.ajax({
                 url: "/Search",
                 type: 'POST',
                 cache: false,
-                data: { 'query': e.target.value },
+                data: { 'query': e.target.value, 'scope':scopes },
                 success: function (html) {
 
-                    //var data = html.aggregations.auto_complete.buckets
+                    
                     var data = html.result
-                    // console.log(data)
-
-                    var _ = []
+                   
+                    var resultArray = []
 
                     $.each(data, (index, value) => {
 
-                        _.push(value['name'] + ' > ' + value['type'])
+                        resultArray.push(value['name'] + ' > ' + value['type'])
 
                     });
-                    console.log(_)
-                    autoc(_);
+                    console.log(resultArray)
+                    autoc(resultArray);
                 }
             });
         }
@@ -151,16 +158,16 @@
         //$source.addEventListener('input', aa)
         $source.addEventListener('propertychange', searchAsYouType)
 
-        function autoc(_) {
+        function autoc(resultArray) {
             $("#source").autocomplete({
-                source: _
+                source: resultArray
             });
         }
 
         function submit() {
             //sessionStorage.setItem('title', $("#source").val())
             var input = $("#source").val();
-            var scope = $("#scope").val();
+            var scope = $("#scopes").val();
             if ($("#source").val().includes('>')) {
                 input = input.split('>')[0]
                 console.log(input);

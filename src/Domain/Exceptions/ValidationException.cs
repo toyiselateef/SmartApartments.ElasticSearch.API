@@ -16,7 +16,7 @@ namespace Domain.Exceptions
 
         public ValidationException(IEnumerable<ValidationFailure> failures) : this()
         {
-            foreach (var failure in failures)
+            foreach (ValidationFailure failure in failures)
             {
                 Errors.Add(failure.ErrorMessage);
             }

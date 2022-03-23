@@ -21,6 +21,9 @@ namespace Domain.Entities
         public string AWTDefaultIndex { get; set; }
         public bool UseLocal { get; set; }
         public string AWTToken { get; set; }
-        public bool UseAWSBasicIAM { get; set; }
+        public bool UseAWSBasicAuth { get; set; }
+        public int NumberOfShards { get; set; }
+        public int NumberOfReplicas { get; set; }
+     
     }
 }

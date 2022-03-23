@@ -1,10 +1,8 @@
 ﻿using Domain;
 using Domain.Entities;
-using Domain.Exceptions;
 using Nest;
 using SmartApartment.API.Models;
 using SmartApartment.Logic;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -13,10 +11,10 @@ namespace Implementation.Helper
     public static class SearchServiceHelper
     {
 
-        public static ElasticClient GetClient(ElasticSettings settings)
+        public static ElasticClient GetClient(ElasticSettings setting)
         {
-            bool useLocal = settings.UseLocal;
-            ElasticClient client = useLocal ? LocalElasticSearchConnection.Connect(settings.LocalDefaultIndex, settings.URILocal) : new AWSElasticSearcConnection(settings).ConnectBasicAuth();
+            bool useLocal = setting.UseLocal;
+            ElasticClient client = useLocal ? new LocalElasticSearchConnection(setting).Client : new AWSElasticSearcConnection(setting).Client;
             return client;
 
         }
@@ -29,17 +27,16 @@ namespace Implementation.Helper
                 client.Indices.Refresh(index);
 
                 ISearchResponse<PropertyClass> Properties = client.Search<PropertyClass>(s => s
-                       .Source(true)
                        .Index(index)
                        .From(0)
                        .Query(q => q
                              .Bool(b => b
                                 .Must(m => m
                                      .MultiMatch(mm => mm
-                                               .Fields(f => f
-                                                   .Field(ff => ff.name)
-                                                   .Field(ff => ff.formerName)
-                                                   .Field(ff => ff.city)
+                                               .Fields(fs => fs
+                                                   .Field(f => f.name)
+                                                   .Field(f => f.formerName)
+                                                   .Field(f => f.city)
                                                )
                                                .Analyzer("stop")
                                                .Type(TextQueryType.PhrasePrefix)
@@ -62,7 +59,7 @@ namespace Implementation.Helper
                 {
                     name = property.name,
                     market = property.market,
-                    address = property.streetAddress,
+                    address = $"{property.city}, {property.state}",
                     type = "property"
                 });
             }
@@ -70,7 +67,6 @@ namespace Implementation.Helper
             {
 
                 ISearchResponse<PropertyClass> Properties = client.Search<PropertyClass>(s => s
-                         .Source(true)
                          .Index(index)
                          .From(0)
                          .Query(q => q
@@ -97,7 +93,7 @@ namespace Implementation.Helper
                 {
                     name = property.name,
                     market = property.market,
-                    address = property.streetAddress,
+                    address = $"{property.city}, {property.state}",
                     type = "property"
                 });
 
@@ -116,7 +112,6 @@ namespace Implementation.Helper
             {
                 client.Indices.Refresh(index);
                 ISearchResponse<ManagementClass> management = client.Search<ManagementClass>(s => s
-                       .Source(true)
                        .Index(index)
                        .From(0)
                        .Query(q => q
@@ -145,13 +140,13 @@ namespace Implementation.Helper
                 {
                     name = management.name,
                     market = management.market,
+                    address = management.state,
                     type = "management"
                 });
             }
             else
             {
                 ISearchResponse<ManagementClass> management = client.Search<ManagementClass>(s => s
-                                     .Source(true)
                                      .Index(index)
                                      .From(0)
                                      .Query(q => q
@@ -162,6 +157,7 @@ namespace Implementation.Helper
                                                              .Analyzer("stop")
                                                              .Query(input.searchPhrase)
                                                              .MaxExpansions(10))
+                                                   
 
                                                 )
                                            )
@@ -172,6 +168,7 @@ namespace Implementation.Helper
                 {
                     name = management.name,
                     market = management.market,
+                    address = management.state,
                     type = "management"
                 });
             }

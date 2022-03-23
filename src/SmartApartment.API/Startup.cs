@@ -1,15 +1,14 @@
-using Application.Interface.Services;
 using Application.Middlewares;
 using Domain.Entities;
-using Implementation.Services;
+using Implemetation.Config;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Serilog;
 using SmartApartment.API.Helper;
-using SmartApartment.Application.Interface.Services;
 
 namespace SmartApartment.API
 {
@@ -30,17 +29,10 @@ namespace SmartApartment.API
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "SmartApartmentSearch.API", Version = "v1" });
-
-                //var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.XML";
-                //var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-
-                ////... and tell Swagger to use those XML comments.
-                //c.IncludeXmlComments(xmlPath);
             });
 
             services.AddElasticSearch(Configuration);
-            services.AddScoped<ISearchService, SearchService>();
-            services.AddScoped<IUploadServices, UploadServices>();
+            services.AddInfrastructureServices();
             services.AddTransient<ExceptionHandlingMiddleware>();
 
             services.Configure<ElasticSettings>(Configuration.GetSection("Elastic"));
@@ -57,6 +49,7 @@ namespace SmartApartment.API
                         .AllowCredentials();
                     });
             });
+
 
             //services.AddAuthentication(options =>
             //{
@@ -89,7 +82,7 @@ namespace SmartApartment.API
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
+            app.UseSerilogRequestLogging();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

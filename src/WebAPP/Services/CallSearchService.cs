@@ -1,19 +1,40 @@
 ﻿using Newtonsoft.Json;
 using RestSharp;
 using SmartApartmentWebAPP.Models;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace SmartApartmentWebAPP.Services
 {
+
     public class CallSearchService: ISearchService
     {
+        public MarketResponse getMarketList()
+        {
+            var baseUrl = "https://localhost:44384";
+
+            var resourceEndpoint = "/api/apartments/marketlist";
+            string url = Path.Combine(baseUrl, resourceEndpoint);
+            var client = new RestClient(baseUrl);
+
+            var request = new RestRequest(resourceEndpoint);
+
+            request.Method = Method.Get;
+            request.AddHeader("Content-Type", "application/json; charset=utf-8");
+            
+
+
+            var resp = client.ExecuteAsync(request);
+            resp.Wait();
+            if (resp.IsFaulted||resp.Exception!=null)
+            {
+                return new MarketResponse();
+            }
+            return JsonConvert.DeserializeObject<MarketResponse>(resp.Result.Content);
+        }
+
         public SearchResponse getSearchResult(string query, string market)
         {
-            market = (!string.IsNullOrEmpty(market) && market.Contains("select")) ? null : market;
+            market = (string.IsNullOrEmpty(market) || market.Contains("select")) ? null : market;
             var markets = new List<string>()
             {
                 
@@ -26,7 +47,7 @@ namespace SmartApartmentWebAPP.Services
 
             var baseUrl = "https://localhost:44384";
 
-            var resourceEndpoint = "/apartments/simplesearch";
+            var resourceEndpoint = "/api/apartments/autocompletesearch";
             
             string url = Path.Combine(baseUrl, resourceEndpoint);
 
@@ -47,5 +68,7 @@ namespace SmartApartmentWebAPP.Services
 
 
         }
+
+       
     }
 }

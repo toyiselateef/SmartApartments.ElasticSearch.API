@@ -21,4 +21,10 @@ namespace SmartApartmentWebAPP.Models
         [JsonProperty("address")]
         public string address { get; set; }
     }
+
+    public class MarketResponse
+    {
+        [JsonProperty("result")]
+        public List<string> result { get; set; }
+    }
 }

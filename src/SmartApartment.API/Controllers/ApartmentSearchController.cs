@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace SmartApartment.API.Controllers
 {
 
-    [Route("apartments")]
+ 
     public class ApartmentSearchController : BaseController
     {
         private readonly ILogger<ApartmentSearchController> logger;
@@ -47,12 +47,12 @@ namespace SmartApartment.API.Controllers
         /// <summary>
         /// Searches an apartment data in an index.
         /// </summary>
-        /// <param name="query">the term used for search</param>
+        /// <param name="query">the search payload used for search</param>
         /// <returns>List of documents that matches to search query, of type management or property</returns>
         [HttpPost]
         [ProducesResponseType(statusCode: 200)]
         [ProducesResponseType(404)]
-        [Route("simplesearch")]
+        [Route("autocompletesearch")]
         public async Task<ActionResult<APIResponse<List<SearchResult>>>> SearchApartment([FromBody] SearchInputs query)
         {
 
@@ -67,9 +67,8 @@ namespace SmartApartment.API.Controllers
 
 
         /// <summary>
-        /// This fetches an apartment data in an index.
+        /// This indexes documents into elasticsearch
         /// </summary>
-        /// <param name="query">the term used for search</param>
         /// <returns>List of documents that matches to search query, of type management or property</returns>
         [HttpPost]
         [Route("indexDocuments")]

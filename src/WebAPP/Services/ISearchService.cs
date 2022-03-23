@@ -10,6 +10,7 @@ namespace SmartApartmentWebAPP.Services
     public interface ISearchService
     {
         SearchResponse getSearchResult(string query, string market);
+        MarketResponse getMarketList();
 
 
     }

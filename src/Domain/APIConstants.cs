@@ -4,19 +4,7 @@ namespace SmartApartment.Models
 {
     public class APIConstants
     {
-        //public const string LocalizationSourceName = "ams";
-        //public const string ConnectionStringName = "Default";
-        //public const string OracleConnectionStringName = "OrDefault";
-        //public const bool MultiTenancyEnabled = false;
-        //public const string CacheName = "AMS.Service";
-
-        //public class Entities
-        //{
-        //    public const int CustomerIDMaxLength = 20;
-        //    public const int AccountNumberMaxLength = 50;
-        //    public const int NameMaxLength = 50;
-        //    public const int PhoneNumberMaxLength = 50;
-        //}
+       
         public enum responseType
         {
             Success,
