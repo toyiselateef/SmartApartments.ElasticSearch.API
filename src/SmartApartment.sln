@@ -29,6 +29,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAPP", "WebAPP\WebAPP.csproj", "{1460A0CB-67DC-40A9-B7F6-70A834327789}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartApartments.IntegrationTest", "SmartApartments.IntegrationTest\SmartApartments.IntegrationTest.csproj", "{0AB9AB41-FB13-4928-8D83-6D3E85122442}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,10 @@ Global
 		{1460A0CB-67DC-40A9-B7F6-70A834327789}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1460A0CB-67DC-40A9-B7F6-70A834327789}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1460A0CB-67DC-40A9-B7F6-70A834327789}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0AB9AB41-FB13-4928-8D83-6D3E85122442}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0AB9AB41-FB13-4928-8D83-6D3E85122442}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0AB9AB41-FB13-4928-8D83-6D3E85122442}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0AB9AB41-FB13-4928-8D83-6D3E85122442}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -75,6 +81,7 @@ Global
 		{23AACE4E-A48F-4FA8-A73C-8DA9B0A3D114} = {2E9429A4-8410-472D-9C81-E000BFB928AF}
 		{6D3EAEAF-DDC3-4CAC-8596-6CDCD23F151B} = {2E9429A4-8410-472D-9C81-E000BFB928AF}
 		{1460A0CB-67DC-40A9-B7F6-70A834327789} = {DF1A7783-F07C-48F8-BC38-BE609CBEC6B6}
+		{0AB9AB41-FB13-4928-8D83-6D3E85122442} = {320014E9-623A-407B-9039-1CE0AC9D6A54}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E305C01E-5E99-4888-9079-66BF7960D86E}

@@ -40,7 +40,9 @@ namespace Implementation.Helper
 
             CreateIndexResponse createIndexResponse = client.Indices.Create(Name, c => c
                   .Settings(s => s
-                      .Analysis(indexDesc => indexDesc
+                      .NumberOfShards(5)
+                      .NumberOfReplicas(0)
+                      .Analysis(analysisDesc => analysisDesc
                            .Analyzers(analyzerDesc => analyzerDesc
                                .Custom("myCustonalyzer", custAnalDesc => custAnalDesc
                                     .Tokenizer("edge_ngram")
